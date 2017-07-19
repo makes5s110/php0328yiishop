@@ -32,6 +32,7 @@ class ArticleCategoryController extends Controller{
              }else{
                  return $model->getErrors();exit;
              }
+             return $this->redirect(['article-category/index']);
          }
          return $this->render('add',['model'=>$model]);
      }
@@ -45,6 +46,7 @@ class ArticleCategoryController extends Controller{
              }else{
                  return $model->getErrors();exit;
              }
+             return $this->redirect(['article-category/index']);
          }
          return $this->render('add',['model'=>$model]);
      }
