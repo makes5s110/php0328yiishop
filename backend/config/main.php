@@ -10,6 +10,10 @@ return [
     'id' => 'app-backend',
     'basePath' => dirname(__DIR__),
     'controllerNamespace' => 'backend\controllers',
+    //把语言设置成中文
+    'language'=>'zh-CN',
+    //修改默认路由
+    //'defaultRoute'=>'student/index',
     'bootstrap' => ['log'],
     'modules' => [],
     'components' => [
