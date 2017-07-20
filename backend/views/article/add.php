@@ -9,8 +9,8 @@ echo $form->field($model,'content')->widget('kucha\ueditor\UEditor',[
     'clientOptions' => [
         //编辑区域大小
         'initialFrameHeight' => '200',
-        //设置语言
-        'lang' =>'en', //中文为 zh-cn
+        //设置语言 中文
+        'lang' =>'zh-cn', //英文为 en
         //定制菜单
         'toolbars' => [
             [

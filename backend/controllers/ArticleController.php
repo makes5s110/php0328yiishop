@@ -8,7 +8,7 @@ use yii\web\Controller;
 use yii\web\Request;
 
 class ArticleController extends Controller{
-
+    //首页
     public function actionIndex($keywords=''){
         //按照条件查找所有文章
         $query = Article::find()->where(['and','status>-1',"name like '%{$keywords}%'"])->orderBy('sort');
@@ -28,7 +28,7 @@ class ArticleController extends Controller{
         return $this->render('index',['articles'=>$articles,'page'=>$page]);
     }
 
-
+    //添加方法
     public function actionAdd(){
         //实例化一个文章对象
         $article = new Article();
@@ -58,7 +58,7 @@ class ArticleController extends Controller{
         //调用视图，并传值
         return $this->render('add',['article'=>$article,'model'=>$model]);
     }
-
+    //修改方法
     public function actionEdit($id){
         //根据id找到一个文章对象
         $article = Article::findOne(['id'=>$id]);
@@ -88,7 +88,7 @@ class ArticleController extends Controller{
         return $this->render('add',['article'=>$article,'model'=>$model]);
 
     }
-
+    //删除方法
     public function actionDel($id){
         //根据id找到一个文章对象
         $article = Article::findOne(['id'=>$id]);
@@ -99,7 +99,7 @@ class ArticleController extends Controller{
         //跳转页面
         return $this->redirect(['article/index']);
     }
-
+    //查看
     public function actionCheck($id){
         $article = Article::findOne(['id'=>$id]);
         $model = ArticleDetail::findOne(['article_id'=>$id]);
