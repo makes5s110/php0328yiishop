@@ -1,8 +1,11 @@
 <form action="" method="get">
-    <input type="text" name="keywords" class=""/>
-    <input type="submit" value="搜索" class="btn btn-info"/>
+    <div class="pull-right" style="padding-bottom: 5px">
+        <input type="text" name="keywords" style="line-height: 28px" placeholder="请输入名称搜索关键字"/>
+        <input type="submit" value="搜索" class="btn btn-info"/>
+    </div>
 </form>
 <?= \yii\bootstrap\Html::a('添加',['article/add'],['class'=>'btn btn-info'])?>
+
 <table class="table">
     <tr>
         <th>ID</th>

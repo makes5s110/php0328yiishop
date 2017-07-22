@@ -2,9 +2,11 @@
 namespace backend\controllers;
 
 use backend\models\ArticleCategory;
+use flyok666\qiniu\Qiniu;
 use yii\data\Pagination;
 use yii\web\Controller;
 use yii\web\Request;
+use flyok666\uploadifive\UploadAction;
 
 class ArticleCategoryController extends Controller{
      public function actionIndex(){
@@ -78,4 +80,5 @@ class ArticleCategoryController extends Controller{
          //跳转页面到index
          return $this->redirect(['article-category/index']);
      }
+
 }
