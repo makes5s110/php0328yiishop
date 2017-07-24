@@ -23,7 +23,7 @@ $categories[] = ['id'=>0,'parent_id'=>0,'name'=>'顶级分类','open'=>1];
 $nodes = \yii\helpers\Json::encode($categories);
 $nodeId = $model->parent_id;
 $this->registerJs(new \yii\web\JsExpression(
-    <<<JS
+<<<JS
 var zTreeObj;
         // zTree 的参数配置，深入使用请参考 API 文档（setting 配置详解）
         var setting = {
@@ -54,12 +54,6 @@ var zTreeObj;
         //选中节点
         zTreeObj.selectNode(node);
         //触发选中事件
-        // var treeObj = $.fn.zTree.getZTreeObj("tree");
-        // var nodes = treeObj.getSelectedNodes();
-        // for (var i=0, l=nodes.length; i < l; i++) {
-	     //    treeObj.removeNode(nodes[i]);
-        //     }
-
 JS
 
 ));

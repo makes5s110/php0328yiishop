@@ -28,6 +28,6 @@
     <?php endforeach;?>
 </table>
 
-//<?php
+<?php
 //echo \yii\widgets\LinkPager::widget(['pagination'=>$page,'nextPageLabel'=>'下一页','prevPageLabel'=>'上一页','firstPageLabel'=>'首页','lastPageLabel'=>'末页'])
 //?>
