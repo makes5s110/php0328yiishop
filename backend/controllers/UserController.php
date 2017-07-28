@@ -7,6 +7,7 @@ use backend\models\User;
 use backend\models\ChangeForm;
 use yii\data\Pagination;
 use yii\captcha\CaptchaAction;
+use yii\helpers\ArrayHelper;
 use yii\web\Request;
 
 class UserController extends \yii\web\Controller
@@ -38,11 +39,11 @@ class UserController extends \yii\web\Controller
         $user = new User(['scenario'=>User::SCENARIO_ADD]);
         //实例化组件
         $request = new Request();
+
         //判断是否是post提交
         if($request->isPost){
             //获取用户输入的数据
             $user->load($request->post());
-
             //验证数据的有效性
             if($user->validate()){
                 $user->status = 1;
@@ -52,6 +53,16 @@ class UserController extends \yii\web\Controller
                 $user->password_hash =\Yii::$app->security->generatePasswordHash($user->password_hash);
                 //保存数据
                 $user->save(false);
+                $authManager = \Yii::$app->authManager;
+
+                if(is_array($this->roles)){
+                    foreach ($this->roles as $roleName){
+                        $role = $authManager->getRole($roleName);
+                        if($role){
+                            $authManager->assign($role,$this->id);
+                        }
+                    }
+                }
 
             }
             \Yii::$app->session->setFlash('success','保存成功');
@@ -65,11 +76,13 @@ class UserController extends \yii\web\Controller
     //修改
     public function actionEdit($id){
         $user = User::findOne(['id'=>$id]);
-
+        $user->scenario=User::SCENARIO_EDIT;
+        $authManager = \Yii::$app->authManager;
         //实例化组件
         $request = new Request();
         //判断是否是post提交
         if($request->isPost){
+            $authManager->revokeAll($id);
             //获取用户输入的数据
             $user->load($request->post());
             //验证数据的有效性
@@ -79,10 +92,25 @@ class UserController extends \yii\web\Controller
                 $user->password_hash =\Yii::$app->security->generatePasswordHash($user->password_hash);
                 //保存数据
                 $user->save(false);
+//                var_dump($user->roles);exit;
+                if(is_array($user->roles)){
+                    foreach ($user->roles as $roleName){
+                        $role = $authManager->getRole($roleName);
+                        if($role){
+//                            var_dump($authManager->assign($role,$id));exit;
+                            $authManager->assign($role,$id);
+                        }
+                    }
+                }
                 \Yii::$app->session->setFlash('success','修改成功');
             }
             //验证成功，跳转页面
             return $this->redirect(['user/index']);
+        }else{
+            //回显用户的角色
+            $roles = $authManager->getRolesByUser($id);
+//            var_dump($roles);exit;
+            $user->roles = ArrayHelper::map($roles,'name','name');
         }
 
         //跳转页面,并传值

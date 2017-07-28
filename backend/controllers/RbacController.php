@@ -3,6 +3,8 @@
 namespace backend\controllers;
 
 use backend\models\PermissionForm;
+use backend\models\RoleForm;
+use yii\helpers\ArrayHelper;
 use yii\web\NotFoundHttpException;
 use yii\web\Request;
 
@@ -94,19 +96,86 @@ class RbacController extends \yii\web\Controller
     }
     //添加角色
     public function actionAddRole(){
+        $model = new RoleForm(['scenario'=>PermissionForm::SCENARIO_ADD]);
+        if($model->load(\Yii::$app->request->post()) && $model->validate()){
+            //创建和保存角色
+            $authManager = \Yii::$app->authManager;
+            //创建角色
+            $role = $authManager->createRole($model->name);
+            //赋值
+            $role->description = $model->description;
+            //保存角色
+            $authManager->add($role);
+            //给角色赋予权限
+            //var_dump($model);exit;
+            if(is_array($model->permissions)){
+                foreach ($model->permissions as $permissionName){
+                    $permission = $authManager->getPermission($permissionName);
+                    if($permission) $authManager->addChild($role,$permission);
+                }
+            }
+            \Yii::$app->session->setFlash('success','角色添加成功');
+            return $this->redirect(['role-index']);
 
+        }
+
+        return $this->render('add-role',['model'=>$model]);
     }
     //修改角色
-    public function actionEditRole(){
+    public function actionEditRole($name){
+        $model = new RoleForm();
+        $authManager = \Yii::$app->authManager;
+        $role = $authManager->getRole($name);
+        if(\Yii::$app->request->isPost){
+            if($model->load(\Yii::$app->request->post())  && $model->validate()){
+                //全部取消关联
+                $authManager->removeChildren($role);
+                $role->name = $model->name;
+                $role->description = $model->description;
+                $authManager->update($name,$role);
+                //判断传值是否是数组
+                if(is_array($model->permissions)){
+//                    var_dump($model->permissions);exit;
+                    foreach ($model->permissions as $permissionName){
+                        //遍历传入的每个权限，根据权限名创建权限
+                        $permission = $authManager->getPermission($permissionName);
+                        //创建成功
+                        if($permission){
+                            //更新角色关联权限
+                            $authManager->addChild($role,$permission);
+                        }
+                    }
+            }
+
+            }
+            return $this->redirect(['index-role']);
+        }else{
+            //表单权限多选回显
+            //获取角色的权限
+            $permissions = $authManager->getPermissionsByRole($name);
+            $model->name = $role->name;
+            $model->description = $role->description;
+            $model->permissions = ArrayHelper::map($permissions,'name','name');
+        }
+
+        return $this->render('add-role',['model'=>$model]);
 
     }
     //角色列表
     public function actionIndexRole(){
-
+        //获取所有角色
+        $models = \Yii::$app->authManager->getRoles();
+        //调用视图，传入数据
+        return $this->render('index-role',['models'=>$models]);
     }
     //删除角色
-    public function actionDelRole(){
-
+    public function actionDelRole($name){
+        //根据名字找出角色
+        $role = \Yii::$app->authManager->getRole($name);
+        //$permission = \Yii::$app->authManager->getPermission($name);
+        //移除角色，并清空该角色的权限
+        \Yii::$app->authManager->remove($role);
+        \Yii::$app->authManager->removeChildren($role);
     }
 
 }

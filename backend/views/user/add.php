@@ -7,7 +7,7 @@ echo $form->field($user,'password')->passwordInput(['value'=>'']);
 if(!$user->isNewRecord){
     echo $form->field($user,'status',['inline'=>1])->radioList(\backend\models\User::$status_options);
 }
-
+echo $form->field($user,'roles',['inline'=>1])->checkboxList(\yii\helpers\ArrayHelper::map(Yii::$app->authManager->getRoles(),'name','description'));
 echo $form->field($user,'email');
 echo \yii\bootstrap\Html::submitButton('提交',['class'=>'btn btn-info']);
 \yii\bootstrap\ActiveForm::end();

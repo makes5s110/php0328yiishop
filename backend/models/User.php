@@ -30,6 +30,8 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
     public static $status_options=[
         1=>'启用',0=>'禁用'
     ];
+    //角色
+    public $roles=[];
     public static function tableName()
     {
         return 'user';
@@ -52,6 +54,7 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
             //['repassword','compare','compareAttribute'=>'password','message'=>'两次输入的密码不一致，请确认后重新输入'],
             [['username','email'],'unique'],
             ['email','email'],
+            ['roles','safe','on'=>self::SCENARIO_EDIT]
 
         ];
     }
@@ -67,7 +70,8 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
             'password' => '密码',
             'email' => '邮箱',
             'repassword'=>'确认密码',
-            'status'=>'状态'
+            'status'=>'状态',
+            'roles'=>'角色'
         ];
     }
     /**
