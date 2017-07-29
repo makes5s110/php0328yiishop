@@ -29,22 +29,40 @@ AppAsset::register($this);
 <div class="wrap">
     <?php
     NavBar::begin([
-        'brandLabel' => 'My Company',
+        'brandLabel' => '商品后台管理',
         'brandUrl' => Yii::$app->homeUrl,
         'options' => [
             'class' => 'navbar-inverse navbar-fixed-top',
         ],
     ]);
-    $menuItems = [
-        ['label' => 'Home', 'url' => ['/site/index']],
-    ];
+    $menuItems = [];
+    $menus=\backend\models\Menu::find()->where(['parent_id'=>0])->all();
+
+    foreach ($menus as $menu){
+        //一级菜单
+        $items = [];
+
+        foreach ($menu->children as $child){
+            //判断当前用户是否有该路由（菜单）的权限
+
+//            var_dump(Yii::$app->user->can($child->url));exit;
+            if(Yii::$app->user->can($child->url)){
+                $items[] = ['label' => $child->name, 'url' => [$child->url]];
+            }
+        }
+        //没有子菜单时，不显示一级菜单
+        if(!empty($items)){
+            $menuItems[] = ['label' => $menu->name, 'items' => $items];
+        }
+    }
+
     if (Yii::$app->user->isGuest) {
-        $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
+        $menuItems[] = ['label' => '登录', 'url' => ['/user/login']];
     } else {
         $menuItems[] = '<li>'
-            . Html::beginForm(['/site/logout'], 'post')
+            . Html::beginForm(['/user/logout'], 'post')
             . Html::submitButton(
-                'Logout (' . Yii::$app->user->identity->username . ')',
+                '注销 (' . Yii::$app->user->identity->username . ')',
                 ['class' => 'btn btn-link logout']
             )
             . Html::endForm()

@@ -54,7 +54,7 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
             //['repassword','compare','compareAttribute'=>'password','message'=>'两次输入的密码不一致，请确认后重新输入'],
             [['username','email'],'unique'],
             ['email','email'],
-            ['roles','safe','on'=>self::SCENARIO_EDIT]
+            ['roles','safe','on'=>[self::SCENARIO_ADD,self::SCENARIO_EDIT]]
 
         ];
     }

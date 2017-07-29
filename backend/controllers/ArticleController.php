@@ -1,6 +1,7 @@
 <?php
 namespace backend\controllers;
 
+use backend\filters\RbacFilter;
 use backend\models\Article;
 use backend\models\ArticleDetail;
 use yii\data\Pagination;
@@ -111,6 +112,14 @@ class ArticleController extends Controller{
         return [
             'upload' => [
                 'class' => 'kucha\ueditor\UEditorAction',
+            ]
+        ];
+    }
+    public function behaviors()
+    {
+        return[
+            'rbac'=>[
+                'class'=>RbacFilter::className(),
             ]
         ];
     }

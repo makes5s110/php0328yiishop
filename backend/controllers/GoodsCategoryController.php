@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\filters\RbacFilter;
 use backend\models\GoodsCategory;
 //use yii\data\Pagination;
 use yii\web\HttpException;
@@ -113,6 +114,14 @@ class GoodsCategoryController extends \yii\web\Controller
             \Yii::$app->session->setFlash('warning','该分类下还有子分类，不能删除！');
         }
         return $this->redirect(['goods-category/index']);
+    }
+    public function behaviors()
+    {
+        return[
+            'rbac'=>[
+                'class'=>RbacFilter::className(),
+            ]
+        ];
     }
 //    //测试嵌套结合使用
 //    public function actionTest(){

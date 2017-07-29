@@ -37,9 +37,13 @@ class LoginForm extends Model
         // 通过用户名查找用户
         $model = User::findOne(['username' => $this->username]);
         //判断是否存在该用户
+
         if ($model) {
             //验证输入的密码和数据库中的密码是否一致
-            if (\Yii::$app->security->validatePassword($this->password, $model->password_hash)) {
+//            var_dump($model->password_hash,$this->password);exit;
+//            var_dump(\Yii::$app->security->validatePassword($this->password,$model->password_hash));exit;
+            if (\Yii::$app->security->validatePassword($this->password,$model->password_hash)) {
+
                 //密码正确.可以登录
                 //2 登录(保存用户信息到session)
                 \Yii::$app->user->login($model,$this->remember?3600*24:0);

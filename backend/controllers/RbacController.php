@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\filters\RbacFilter;
 use backend\models\PermissionForm;
 use backend\models\RoleForm;
 use yii\helpers\ArrayHelper;
@@ -177,5 +178,12 @@ class RbacController extends \yii\web\Controller
         \Yii::$app->authManager->remove($role);
         \Yii::$app->authManager->removeChildren($role);
     }
-
+//    public function behaviors()
+//    {
+//        return[
+//            'rbac'=>[
+//                'class'=>RbacFilter::className(),
+//            ]
+//        ];
+//    }
 }

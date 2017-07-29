@@ -1,5 +1,6 @@
 
 <h1>用户列表</h1>
+
 <?php
 echo \yii\bootstrap\Html::a('添加',['user/add'],['class'=>'btn btn-info glyphicon glyphicon-plus']);
 if(!\Yii::$app->user->isGuest){

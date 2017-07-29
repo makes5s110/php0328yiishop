@@ -1,6 +1,7 @@
 <?php
 namespace backend\controllers;
 
+use backend\filters\RbacFilter;
 use backend\models\Brand;
 use flyok666\qiniu\Qiniu;
 use yii\data\Pagination;
@@ -166,6 +167,14 @@ class BrandController extends Controller{
                     $action->output['fileUrl']  = $url;
                 },
             ],
+        ];
+    }
+    public function behaviors()
+    {
+        return[
+            'rbac'=>[
+                'class'=>RbacFilter::className(),
+            ]
         ];
     }
 

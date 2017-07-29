@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\filters\RbacFilter;
 use backend\models\LoginForm;
 use backend\models\User;
 use backend\models\ChangeForm;
@@ -36,14 +37,15 @@ class UserController extends \yii\web\Controller
     //添加
     public function actionAdd(){
         //实例化用户模型
-        $user = new User(['scenario'=>User::SCENARIO_ADD]);
+        $user = new User();
+        $user->scenario=User::SCENARIO_ADD;
         //实例化组件
         $request = new Request();
-
         //判断是否是post提交
         if($request->isPost){
             //获取用户输入的数据
             $user->load($request->post());
+//            var_dump($user->validate());exit;
             //验证数据的有效性
             if($user->validate()){
                 $user->status = 1;
@@ -54,12 +56,12 @@ class UserController extends \yii\web\Controller
                 //保存数据
                 $user->save(false);
                 $authManager = \Yii::$app->authManager;
+                if(is_array($user->roles)){
 
-                if(is_array($this->roles)){
-                    foreach ($this->roles as $roleName){
+                    foreach ($user->roles as $roleName){
                         $role = $authManager->getRole($roleName);
                         if($role){
-                            $authManager->assign($role,$this->id);
+                            $authManager->assign($role,$user->id);
                         }
                     }
                 }
@@ -89,7 +91,7 @@ class UserController extends \yii\web\Controller
             if($user->validate()){
                 $user->updated_at = time();
                 //把用户输入的密码加密
-                $user->password_hash =\Yii::$app->security->generatePasswordHash($user->password_hash);
+                $user->password_hash =\Yii::$app->security->generatePasswordHash($user->password);
                 //保存数据
                 $user->save(false);
 //                var_dump($user->roles);exit;
@@ -185,4 +187,13 @@ class UserController extends \yii\web\Controller
         }
         return $this->render('change',['model'=>$model]);
     }
+//    public function behaviors()
+//    {
+//        return[
+//            'rbac'=>[
+//                'class'=>RbacFilter::className(),
+//            ]
+//        ];
+//    }
+
 }

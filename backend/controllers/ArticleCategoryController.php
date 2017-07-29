@@ -1,6 +1,7 @@
 <?php
 namespace backend\controllers;
 
+use backend\filters\RbacFilter;
 use backend\models\ArticleCategory;
 use flyok666\qiniu\Qiniu;
 use yii\data\Pagination;
@@ -80,5 +81,13 @@ class ArticleCategoryController extends Controller{
          //跳转页面到index
          return $this->redirect(['article-category/index']);
      }
+    public function behaviors()
+    {
+        return[
+            'rbac'=>[
+                'class'=>RbacFilter::className(),
+            ]
+        ];
+    }
 
 }
