@@ -7,16 +7,23 @@ $params = array_merge(
 );
 
 return [
+
     'id' => 'app-frontend',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
+    //把语言设置成中文
+    'language'=>'zh-CN',
+    //修改默认路由
+    'defaultRoute'=>'member/index',
     'controllerNamespace' => 'frontend\controllers',
     'components' => [
         'request' => [
             'csrfParam' => '_csrf-frontend',
         ],
         'user' => [
-            'identityClass' => 'common\models\User',
+            'loginUrl'=>['member/ajax-login'],
+//            'identityClass' => 'common\models\User',
+            'identityClass' => 'frontend\models\Member',
             'enableAutoLogin' => true,
             'identityCookie' => ['name' => '_identity-frontend', 'httpOnly' => true],
         ],
@@ -43,6 +50,13 @@ return [
             'rules' => [
             ],
         ],
+        'sms'=>[
+            'class'=>\frontend\components\AliyunSms::className(),
+            'accessKeyId'=>'LTAIxeJqEGQRCmj9',
+            'accessKeySecret'=>'OnIYegZuhb9zZsNTb9yqPUeowe9HuH',
+            'signName'=>'源代码京西商城',
+            'templateCode'=>'SMS_80085052'
+        ]
 
     ],
     'params' => $params,

@@ -84,6 +84,13 @@ class Goods extends \yii\db\ActiveRecord
             1=>'在售',0=>'下架'
         ];
     }
+    /*
+         * 商品和相册关系 1对多
+         */
+    public function getGalleries()
+    {
+        return $this->hasMany(GoodsGallery::className(),['goods_id'=>'id']);
+    }
 
     public function getGoodsCategory(){
         return $this->hasOne(GoodsCategory::className(),['id'=>'goods_category_id']);

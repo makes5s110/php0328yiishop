@@ -13,6 +13,8 @@ use flyok666\qiniu\Qiniu;
 use flyok666\uploadifive\UploadAction;
 use yii\data\Pagination;
 use yii\web\Request;
+use yii\web\NotFoundHttpException;
+use backend\models\GoodsGallery;
 
 class GoodsController extends \yii\web\Controller
 {
@@ -126,7 +128,8 @@ class GoodsController extends \yii\web\Controller
                 //'format' => [$this, 'methodName'],
                 //END METHOD
                 //BEGIN CLOSURE BY-HASH
-                'overwriteIfExist' => true,
+                'overwriteIfExist' => true,//如果文件已存在，是否覆盖
+
 //                'format' => function (UploadAction $action) {
 //                    $fileext = $action->uploadfile->getExtension();
 //                    $filename = sha1_file($action->uploadfile->tempName);
@@ -140,7 +143,7 @@ class GoodsController extends \yii\web\Controller
                     $p1 = substr($filehash, 0, 2);
                     $p2 = substr($filehash, 2, 2);
                     return "{$p1}/{$p2}/{$filehash}.{$fileext}";
-                },
+                },//文件的保存方式
                 //END CLOSURE BY TIME
                 'validateOptions' => [
                     'extensions' => ['jpg', 'png'],
@@ -152,19 +155,82 @@ class GoodsController extends \yii\web\Controller
                 'afterValidate' => function (UploadAction $action) {},
                 'beforeSave' => function (UploadAction $action) {},
                 'afterSave' => function (UploadAction $action) {
-//                    $action->output['fileUrl'] = $action->getWebUrl();
+                    $goods_id = \Yii::$app->request->post('goods_id');
+                    if($goods_id){
+                        $model = new GoodsGallery();
+                        $model->goods_id = $goods_id;
+                        $model->path = $action->getWebUrl();
+                        $model->save();
+                        $action->output['fileUrl'] = $model->path;
+                        $action->output['id'] = $model->id;
+                    }else{
+                        $action->output['fileUrl'] = $action->getWebUrl();//输出文件的相对路径
+                    }
+//图片保存为本地相对路径
+//                    $action->output['fileUrl'] = $action->getWebUrl();//输出文件的相对路径
 //                    $action->getFilename(); // "image/yyyymmddtimerand.jpg"
 //                    $action->getWebUrl(); //  "baseUrl + filename, /upload/image/yyyymmddtimerand.jpg"
-//                    $action->getSavePath(); // "/var/www/htdocs/upload/image/yyyymmddtimerand.jpg"
-                    $qiniu = new Qiniu(\Yii::$app->params['qiniu']);
-                    $qiniu->uploadFile(
-                        $action->getSavePath(), $action->getWebUrl()
-                    );
-                    $url = $qiniu->getLink($action->getWebUrl());
-                    $action->output['fileUrl']  = $url;
-                },
+//                    $action->getSavePath(); // "ar/wwwdocs/upload/image/yyyymmddtimerand.jpg"
+
+                    //将图片上传到七牛云
+//                    $qiniu = new Qiniu(\Yii::$app->params['qiniu']);
+//                    $qiniu->uploadFile(
+//                        $action->getSavePath(), $action->getWebUrl()
+//                    );
+//                    $url = $qiniu->getLink($action->getWebUrl());
+//                    $action->output['fileUrl'] = $url;
+
+                    //商品相册保存到七牛云
+//                    $qiniu = new Qiniu(\Yii::$app->params['qiniu']);
+//                    $qiniu->uploadFile(
+//                        $action->getSavePath(), $action->getWebUrl()
+//                    );
+//                    $url = $qiniu->getLink($action->getWebUrl());
+//                    $goods_id=\yii::$app->request->post('goods_id');
+//                    if($goods_id){
+//                        $model=new GoodsGallery();
+//                        $model->goods_id=$goods_id;
+//                        $model->path=$url;
+//                        $model->save();
+//                        $action->output['fileUrl'] = $model->path;
+//                        $action->output['id'] = $model->id;
+//                    }else{
+//                        $action->output['fileUrl']  = $url;//输出文件的相对路径
+//                    }
+////
+
+                }
             ],
         ];
+    }
+
+    /*
+     * 商品相册
+     */
+    public function actionGallery($id)
+    {
+        $goods = Goods::findOne(['id'=>$id]);
+        if($goods == null){
+            throw new NotFoundHttpException('商品不存在');
+        }
+
+
+        return $this->render('gallery',['goods'=>$goods]);
+
+    }
+
+    /*
+     * AJAX删除图片
+     */
+    public function actionDelGallery(){
+        $id = \Yii::$app->request->post('id');
+        $model = GoodsGallery::findOne(['id'=>$id]);
+        if($model && $model->delete()){
+            return 'success';
+        }else{
+            return 'fail';
+        }
+
     }
     public function behaviors()
     {

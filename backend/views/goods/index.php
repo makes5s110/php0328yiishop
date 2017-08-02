@@ -28,7 +28,7 @@ echo \yii\bootstrap\Html::submitButton('搜索',['class'=>'btn btn-default glyph
         <td><?=$model->shop_price?></td>
         <td><?=$model->stock?></td>
         <td><?=\yii\bootstrap\Html::img($model->logo,['style'=>'max-height:50px'])?></td>
-        <td><?=\yii\bootstrap\Html::a('相册',['goods/index'],['class'=>'btn btn-success glyphicon glyphicon-picture'])?>
+        <td><?=\yii\bootstrap\Html::a('相册',['goods/gallery','id'=>$model->id],['class'=>'btn btn-success glyphicon glyphicon-picture'])?>
             <?=\yii\bootstrap\Html::a('编辑',['goods/edit','id'=>$model->id],['class'=>'btn btn-warning glyphicon glyphicon-edit'])?>
             <?=\yii\bootstrap\Html::a('删除',['goods/del','id'=>$model->id],['class'=>'btn btn-danger glyphicon glyphicon-trash'])?>
             <?=\yii\bootstrap\Html::a('预览',['goods/index'],['class'=>'btn btn-info glyphicon glyphicon-eye-open'])?>
