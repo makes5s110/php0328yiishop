@@ -237,6 +237,9 @@ class GoodsController extends \yii\web\Controller
         return[
             'rbac'=>[
                 'class'=>RbacFilter::className(),
+                'except'=>[//过滤掉某个功能
+                    's-upload'
+                ]
             ]
         ];
     }

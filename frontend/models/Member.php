@@ -30,7 +30,7 @@ class Member extends \yii\db\ActiveRecord implements IdentityInterface
     public $password;//密码
     public $rePassword;//确认密码
     public $smsCode;//电话验证码
-    const SCENARIO_REGISTER = 'register';
+   // const SCENARIO_REGISTER = 'ajax-register';
     public static function tableName()
     {
         return 'member';
@@ -43,8 +43,8 @@ class Member extends \yii\db\ActiveRecord implements IdentityInterface
     {
         return [
             [['username','tel','email'], 'required'],
-            [['code','smsCode','password','rePassword'], 'required','on'=>self::SCENARIO_REGISTER],
-            ['code', 'captcha','captchaAction'=>'member/captcha','on'=>self::SCENARIO_REGISTER],
+            [['code','smsCode','password','rePassword'], 'required'],
+            ['code', 'captcha','captchaAction'=>'member/captcha'],
             [['last_login_time', 'last_login_ip', 'status', 'created_at', 'updated_at'], 'integer'],
             [['username'], 'string', 'max' => 50],
             [['auth_key'], 'string', 'max' => 32],
@@ -74,7 +74,8 @@ class Member extends \yii\db\ActiveRecord implements IdentityInterface
             'status' => '状态(1正常 0删除)',
             'created_at' => '添加时间',
             'updated_at' => '修改时间',
-            'code'=>'验证码'
+            'code'=>'验证码',
+            'smsCode'=>'短信验证码'
         ];
     }
 //    public function beforeSave($insert)

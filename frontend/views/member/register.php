@@ -80,7 +80,7 @@
                         <p></p>
                     </li>
                     <li class="checkcode" id="li_code">
-                        <?=$form->field($model,'code')->widget(\yii\captcha\Captcha::className())?>
+                        <?=$form->field($model,'code')->widget(\yii\captcha\Captcha::className(),['captchaAction'=>'member/captcha'])?>
                         <p></p>
                     </li>
 
@@ -90,7 +90,7 @@
                     </li>
                     <li>
                         <label for="">&nbsp;</label>
-                        <input type="submit" value="" class="login_btn" />
+                        <input type="button" value="" class="login_btn" />
                     </li>
                 </ul>
             <?php \yii\widgets\ActiveForm::end()?>

@@ -67,13 +67,13 @@ class MemberController extends \yii\web\Controller
     public function actionAjaxRegister()
     {
         $model = new Member();
-        $model->scenario = Member::SCENARIO_REGISTER;
+       // $model->scenario = Member::SCENARIO_REGISTER;
         $request = new Request();
         if($request->isPost){
             $model->load($request->post());
             if($model->validate()){
                 $code = \Yii::$app->session->get('code_'.$model->tel);
-                if($code && $model->smsCode){
+                if($code == $model->smsCode){
                     $model->password_hash = \Yii::$app->security->generatePasswordHash($model->password);
                     $model->status = 1;
                     $model->auth_key = \Yii::$app->security->generateRandomString();
@@ -205,9 +205,9 @@ class MemberController extends \yii\web\Controller
         //验证
         //$code2 = \Yii::$app->session->get('code_'.$tel);
     }
-//    //注销
-//    public function actionLogout(){
-//        \Yii::$app->user->logout();
-//        return $this->redirect(['member/ajax-login']);
-//    }
+    //注销
+    public function actionLogout(){
+        \Yii::$app->user->logout();
+        return $this->redirect(['member/ajax-login']);
+    }
 }
