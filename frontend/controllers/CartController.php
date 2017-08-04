@@ -64,6 +64,7 @@ class CartController extends Controller{
     {
         //判断用户是否登录
         if (\Yii::$app->user->isGuest) {
+
             $cookies = \Yii::$app->request->cookies;
             $model = $cookies->get('goods');
             if ($model == null) {
@@ -75,7 +76,7 @@ class CartController extends Controller{
             return $this->render('cart', ['models' => $rows, 'cart' => $models]);
         } else {
 
-            $member_id = \Yii::$app->user->identity->getId();
+            $member_id = \Yii::$app->user->id;
             $models = Cart::find()->where(['member_id' => $member_id])->all();
             $goods_id = [];
             $cart = [];
@@ -122,7 +123,7 @@ class CartController extends Controller{
             $cookies->add($cookie);
             return 'success';
         }else{
-            $member_id = \Yii::$app->user->identity->getId();
+            $member_id = \Yii::$app->user->id;
 
             $models = Cart::find()
                 ->andWhere(['member_id'=>$member_id])
@@ -171,7 +172,7 @@ class CartController extends Controller{
 
     public function actionDelete($id){
         if(!\Yii::$app->user->isGuest){
-            $member_id=\Yii::$app->user->identity->getId();
+            $member_id=\Yii::$app->user->id;
             $models = Cart::find()
                 ->andWhere(['member_id'=>$member_id])
                 ->andWhere(['goods_id'=>$id])

@@ -6,6 +6,7 @@ use backend\models\Goods;
 use backend\models\GoodsCategory;
 use backend\models\GoodsIntro;
 use frontend\models\Address;
+use frontend\models\Cart;
 use frontend\models\LoginForm;
 use frontend\models\Member;
 use yii\captcha\CaptchaAction;
@@ -33,6 +34,29 @@ class MemberController extends \yii\web\Controller
                 $model->last_login_time = time();
                 $model->last_login_ip = ip2long(\Yii::$app->request->userIP);
                 $model->save(false);
+                //获取cookie中数据
+                $cookies = \Yii::$app->request->cookies;
+                $goods = $cookies->get('goods');
+                if($goods != null){
+                    $models = unserialize($goods);
+                    foreach ($models as $goods_id=>$amount){
+                        $carts = Cart::find()->andWhere(['member_id'=>$model->id])->andWhere(['goods_id'=>$goods_id])->one();
+                        if($carts){
+                            $carts->amount += $amount;
+                            $carts->save(false);
+                        }else{
+                            $cart = new Cart();
+                            $cart->amount = $amount;
+                            $cart->member_id = $model->id;
+                            $cart->goods_id = $goods_id;
+                            $cart->save(false);
+                        }
+//                        var_dump($member_id);exit;
+                    }
+//                var_dump($amount);exit;
+                }
+                //清除cookie中的数据
+                \Yii::$app->response->cookies->remove('goods');
                 //保存数据，提示保存成功
                 return Json::encode(['status'=>true,'msg'=>'登录成功']);
             }else{
@@ -84,7 +108,6 @@ class MemberController extends \yii\web\Controller
                 }else{
                     $model->addError('smsCode','短信验证码错误');
                 }
-
             }else{
                 //验证失败，提示错误信息
                 return Json::encode(['status'=>false,'msg'=>$model->getErrors()]);
