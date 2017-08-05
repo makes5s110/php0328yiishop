@@ -23,7 +23,7 @@ return [
         'user' => [
             'loginUrl'=>['member/ajax-login'],
 //            'identityClass' => 'common\models\User',
-            'identityClass' => 'frontend\models\Member',
+            'identityClass' => frontend\models\Member::className(),
             'enableAutoLogin' => true,
             'identityCookie' => ['name' => '_identity-frontend', 'httpOnly' => true],
         ],

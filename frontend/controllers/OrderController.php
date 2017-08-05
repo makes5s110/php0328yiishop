@@ -127,6 +127,7 @@ class OrderController extends Controller{
                 $transaction->commit();
             } catch (Exception $e) {
                 $transaction->rollBack();
+                throw new Exception($e->getMessage());
             }
             return $this->redirect(['order/success']);
 

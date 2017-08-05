@@ -141,18 +141,18 @@
             <div class="cat_bd">
                 <?php foreach ($models as $model):?>
                 <div class="cat item1">
-                    <h3><a href="list?id=<?=$model->id?>"><?=$model->name?></a> <b></b></h3>
+                    <h3><a href="/member/list?id=<?=$model->id?>"><?=$model->name?></a> <b></b></h3>
                     <?php
                         $depth1 = \backend\models\GoodsCategory::find()->where(['parent_id'=>$model->id])->all()
                     ?>
                     <div class="cat_detail">
                         <?php foreach ($depth1 as $a):?>
                         <dl class="dl_1st">
-                            <dt><a href="list?id=<?=$a->id?>"><?=$a->name?></a></dt>
+                            <dt><a href="/member/list?id=<?=$a->id?>"><?=$a->name?></a></dt>
                             <?php $depth2 = \backend\models\GoodsCategory::find()->where(['parent_id'=>$a->id])->all()?>
                             <?php foreach ($depth2 as $b):?>
                             <dd>
-                                <a href="list?id=<?=$b->id?>"><?=$b->name?></a>
+                                <a href="/member/list?id=<?=$b->id?>"><?=$b->name?></a>
                             </dd>
                             <?php endforeach;?>
                         </dl>
