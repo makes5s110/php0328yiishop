@@ -43,7 +43,7 @@ class BrandController extends Controller{
 //        if($request->isPost){
 //            //实例化一个图片对象
 //            $brand->load($request->post());
-////            $brand->imgFile = UploadedFile::getInstance($brand,'imgFile');
+//            $brand->imgFile = UploadedFile::getInstance($brand,'imgFile');
 //
 //
 //            if($brand->validate()){
